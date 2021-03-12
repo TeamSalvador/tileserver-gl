@@ -24,18 +24,16 @@ ENV NODE_ENV="production"
 RUN cd /usr/src/app && npm install --production
 
 
-FROM node:10-buster-slim AS final
+FROM node:lts-alpine3.13 AS final
 
 RUN export DEBIAN_FRONTEND=noninteractive \
-  && apt-get -qq update \
-  && apt-get -y --no-install-recommends install \
+  && apk update update \
+  && apk add --no-cache --virtual \
       libgles2-mesa \
       libegl1 \
       xvfb \
       xauth \
-  && apt-get -y --purge autoremove \
-  && apt-get clean \
-  && rm -rf /var/lib/apt/lists/*
+  && apk cache clean
 
 COPY --from=builder /usr/src/app /app
 
